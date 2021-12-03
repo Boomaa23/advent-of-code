@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	dive()
+	binaryDiagnostic()
 	return
 	fmt.Println("Advent of Code 2021: Boomaa23")
 	fmt.Println("-----------------------------")
@@ -23,6 +23,9 @@ func main() {
 		break
 	case 2:
 		dive()
+		break
+	case 3:
+		binaryDiagnostic()
 		break
 	default:
 		fmt.Println("Day", sel_num, "was not found")
@@ -93,4 +96,47 @@ func dive() {
 	}
 	fmt.Println("Part 1: x=", horiz_pos, "y=", depth_pt1, "xy=", horiz_pos*depth_pt1)
 	fmt.Println("Part 2: x=", horiz_pos, "y=", depth_pt2, "xy=", horiz_pos*depth_pt2)
+}
+
+func binaryDiagnostic() {
+	path := "input/day3.txt"
+	file, err := os.Open(path)
+	scanner := bufio.NewScanner(file)
+	handleErr(err, true, "Could not read input file at "+path)
+
+	var dataLines = []string{}
+	var counters = [12]int{}
+	rows := 0
+	for scanner.Scan() {
+		rows++
+		text := scanner.Text()
+		dataLines = append(dataLines, text)
+		textChars := []rune(text)
+		for i := 0; i < len(textChars); i++ {
+			if textChars[i] == '1' {
+				counters[i]++
+			}
+		}
+	}
+
+	gammaBits := ""
+	epsilonBits := ""
+	for i := 0; i < len(counters); i++ {
+		if counters[i] > rows/2 {
+			gammaBits += "1"
+			epsilonBits += "0"
+		} else {
+			gammaBits += "0"
+			epsilonBits += "1"
+		}
+	}
+
+	gamma, _ := strconv.ParseInt(gammaBits, 2, 64)
+	epsilon, _ := strconv.ParseInt(epsilonBits, 2, 64)
+	fmt.Println("Part 1: gamma=", gamma, " epsilon=", epsilon, " end=", gamma*epsilon)
+
+	// TODO: part 2
+	oxygen, _ := strconv.ParseInt(oxygenBits, 2, 64)
+	co2, _ := strconv.ParseInt(co2Bits, 2, 64)
+	fmt.Println("Part 2: oxygen=", oxygen, " co2=", co2, " end=", oxygen*co2)
 }
